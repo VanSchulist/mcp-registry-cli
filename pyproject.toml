@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp-registry-cli"
+version = "1.0.0"
+description = "The Zero-Config Community Package Manager & Tool Registry for Model Context Protocol"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [
+    { name = "Van Schulist", email = "vanschulist@existentialcloud.ccwu.cc" }
+]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "registry",
+    "package-manager",
+    "llm",
+    "ai-agents",
+    "claude",
+    "cursor"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = []
+
+[project.scripts]
+mcp-registry = "mcp_registry.cli:main"
+
+[project.urls]
+Homepage = "https://www.existentialcloud.ccwu.cc"
+Repository = "https://github.com/VanSchulist/mcp-registry-cli"
+Documentation = "https://github.com/VanSchulist/mcp-registry-cli#readme"
+"Bug Tracker" = "https://github.com/VanSchulist/mcp-registry-cli/issues"
+Ecosystem = "https://github.com/VanSchulist/mcp-mesh"
+
+[tool.setuptools]
+packages = ["mcp_registry"]

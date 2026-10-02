@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="warmGlow" cx="20%" cy="20%" r="70%">
+      <stop offset="0%" stop-color="#3b2010" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#12100d" stop-opacity="1"/>
+    </radialGradient>
+    <linearGradient id="amberGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c1612" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#16120e" stop-opacity="0.95"/>
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#warmGlow)"/>
+
+  <!-- Subtle Ambient Grid Lines -->
+  <g stroke="#ffffff" stroke-opacity="0.03" stroke-width="1">
+    <line x1="80" y1="0" x2="80" y2="630"/>
+    <line x1="200" y1="0" x2="200" y2="630"/>
+    <line x1="400" y1="0" x2="400" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="800" y1="0" x2="800" y2="630"/>
+    <line x1="1000" y1="0" x2="1000" y2="630"/>
+    <line x1="0" y1="120" x2="1200" y2="120"/>
+    <line x1="0" y1="240" x2="1200" y2="240"/>
+    <line x1="0" y1="360" x2="1200" y2="360"/>
+    <line x1="0" y1="480" x2="1200" y2="480"/>
+  </g>
+
+  <!-- Top Badge -->
+  <g transform="translate(80, 70)">
+    <rect width="270" height="36" rx="18" fill="#2d1c10" stroke="#f59e0b" stroke-opacity="0.4" stroke-width="1.5"/>
+    <circle cx="20" cy="18" r="5" fill="#f59e0b"/>
+    <text x="34" y="23" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#fef3c7" letter-spacing="1">EXISTENTIAL CLOUD STUDIO</text>
+  </g>
+
+  <!-- Title & Subtitle -->
+  <text x="80" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="52" font-weight="800" fill="#fef3c7" letter-spacing="-1">
+    mcp-registry-cli
+  </text>
+  <text x="80" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="400" fill="#d6c5b3">
+    The Zero-Config Package Manager &amp; Discovery Registry for MCP Servers
+  </text>
+
+  <!-- Left: Feature Badges -->
+  <g transform="translate(80, 260)">
+    <!-- Pill 1 -->
+    <g transform="translate(0, 0)">
+      <rect width="210" height="42" rx="8" fill="#1f1813" stroke="#443224" stroke-width="1"/>
+      <text x="18" y="26" font-family="monospace" font-size="14" font-weight="600" fill="#f59e0b">📦 25+ Curated Servers</text>
+    </g>
+    <!-- Pill 2 -->
+    <g transform="translate(225, 0)">
+      <rect width="220" height="42" rx="8" fill="#1f1813" stroke="#443224" stroke-width="1"/>
+      <text x="18" y="26" font-family="monospace" font-size="14" font-weight="600" fill="#f59e0b">⚡ Zero Dependencies</text>
+    </g>
+    <!-- Pill 3 -->
+    <g transform="translate(0, 56)">
+      <rect width="210" height="42" rx="8" fill="#1f1813" stroke="#443224" stroke-width="1"/>
+      <text x="18" y="26" font-family="monospace" font-size="14" font-weight="600" fill="#f59e0b">🔄 Multi-Target Sync</text>
+    </g>
+    <!-- Pill 4 -->
+    <g transform="translate(225, 56)">
+      <rect width="220" height="42" rx="8" fill="#1f1813" stroke="#443224" stroke-width="1"/>
+      <text x="18" y="26" font-family="monospace" font-size="14" font-weight="600" fill="#f59e0b">🔒 Idempotent &amp; Safe</text>
+    </g>
+
+    <!-- Supported Ecosystem Logos/Labels -->
+    <g transform="translate(0, 130)">
+      <text x="0" y="20" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="600" fill="#998370" letter-spacing="1">SEAMLESS INTEGRATION WITH</text>
+      <g transform="translate(0, 35)">
+        <rect width="130" height="34" rx="6" fill="#2d221a"/>
+        <text x="14" y="22" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700" fill="#fef3c7">mcp-mesh</text>
+      </g>
+      <g transform="translate(142, 35)">
+        <rect width="150" height="34" rx="6" fill="#2d221a"/>
+        <text x="14" y="22" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700" fill="#fef3c7">Claude Desktop</text>
+      </g>
+      <g transform="translate(304, 35)">
+        <rect width="120" height="34" rx="6" fill="#2d221a"/>
+        <text x="14" y="22" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700" fill="#fef3c7">Cursor IDE</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Right: Terminal Card -->
+  <g transform="translate(620, 130)" filter="url(#softShadow)">
+    <rect width="500" height="430" rx="14" fill="url(#cardGrad)" stroke="#453120" stroke-width="1.5"/>
+    
+    <!-- Window Bar -->
+    <path d="M 0 14 Q 0 0 14 0 L 486 0 Q 500 0 500 14 L 500 42 L 0 42 Z" fill="#241b14"/>
+    <circle cx="24" cy="21" r="5.5" fill="#ea580c"/>
+    <circle cx="44" cy="21" r="5.5" fill="#f59e0b"/>
+    <circle cx="64" cy="21" r="5.5" fill="#84cc16"/>
+    <text x="250" y="26" font-family="monospace" font-size="12" fill="#a8927d" text-anchor="middle">terminal - zsh</text>
+
+    <!-- Terminal Content -->
+    <g transform="translate(24, 65)" font-family="monospace" font-size="13">
+      <!-- Command 1 -->
+      <text x="0" y="16" fill="#f59e0b" font-weight="700">$</text>
+      <text x="16" y="16" fill="#fef3c7">uvx mcp-registry-cli search postgres</text>
+      <text x="0" y="42" fill="#a8927d">Found 2 MCP server(s):</text>
+      <text x="0" y="66" fill="#22c55e" font-weight="700">postgres</text>
+      <text x="110" y="66" fill="#d97706">database</text>
+      <text x="210" y="66" fill="#a8927d">3.8k ★</text>
+      <text x="0" y="86" fill="#786554">Read-only SQL, schema reflection, explain...</text>
+
+      <!-- Command 2 -->
+      <text x="0" y="130" fill="#f59e0b" font-weight="700">$</text>
+      <text x="16" y="130" fill="#fef3c7">mcp-registry add postgres github</text>
+      <text x="0" y="156" fill="#38bdf8">[*] Configuring 'postgres' for mcp-mesh...</text>
+      <text x="0" y="178" fill="#22c55e">[+] Successfully configured 'postgres'</text>
+      <text x="0" y="200" fill="#38bdf8">[*] Configuring 'github' for mcp-mesh...</text>
+      <text x="0" y="222" fill="#22c55e">[+] Successfully configured 'github'</text>
+
+      <!-- Command 3 -->
+      <text x="0" y="266" fill="#f59e0b" font-weight="700">$</text>
+      <text x="16" y="266" fill="#fef3c7">mcp-registry sync</text>
+      <text x="0" y="292" fill="#38bdf8">[*] Inspecting client configurations...</text>
+      <text x="0" y="314" fill="#22c55e">[+] Imported 3 servers from Claude Desktop</text>
+      <text x="0" y="336" fill="#fef3c7" font-weight="700">Synchronization complete: 0 errors</text>
+    </g>
+  </g>
+
+  <!-- Bottom Brand Footnote -->
+  <g transform="translate(80, 560)">
+    <text x="0" y="18" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" fill="#998370">
+      Open Source • MIT License • https://github.com/VanSchulist/mcp-registry-cli
+    </text>
+  </g>
+</svg>
