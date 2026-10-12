@@ -67,6 +67,21 @@ class TestMCPInstaller(unittest.TestCase):
         self.assertIn("mcpServers", data)
         self.assertIn("test-server", data["mcpServers"])
 
+    def test_install_antigravity_target(self):
+        config_file = self.tmp_path / "mcp_config.json"
+        installer = MCPInstaller(target_type=TargetClient.ANTIGRAVITY, custom_path=config_file)
+
+        ok, msg = installer.install(self.mock_entry, dry_run=False)
+        self.assertTrue(ok)
+
+        with open(config_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        # Antigravity uses "mcpServers"
+        self.assertIn("mcpServers", data)
+        self.assertIn("test-server", data["mcpServers"])
+        self.assertEqual(data["mcpServers"]["test-server"]["command"], "npx")
+
     def test_uninstall(self):
         config_file = self.tmp_path / "mcp_mesh.json"
         installer = MCPInstaller(target_type=TargetClient.MCP_MESH, custom_path=config_file)

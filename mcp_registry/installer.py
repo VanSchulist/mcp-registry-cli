@@ -16,6 +16,7 @@ class TargetClient:
     MCP_MESH = "mcp-mesh"
     CLAUDE = "claude"
     CURSOR = "cursor"
+    ANTIGRAVITY = "antigravity"
     CUSTOM = "custom"
 
 
@@ -37,6 +38,10 @@ class MCPInstaller:
             if local_mesh.exists():
                 return local_mesh.resolve()
             return Path("mcp_mesh.json")
+
+        if target_type == TargetClient.ANTIGRAVITY:
+            # Google Antigravity global MCP configuration
+            return home / ".gemini" / "config" / "mcp_config.json"
 
         if target_type == TargetClient.CLAUDE:
             if sys.platform == "win32":

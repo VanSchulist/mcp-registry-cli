@@ -128,6 +128,7 @@ def cmd_info(args: argparse.Namespace) -> int:
             _safe_print(f"    - {Style.YELLOW}{env_k}{Style.RESET} {req_tag}{default_val}: {desc}")
 
     _safe_print(f"\n{Style.DIM}Install to mcp-mesh: mcp-registry add {entry.name}{Style.RESET}")
+    _safe_print(f"{Style.DIM}Install to Antigravity: mcp-registry add {entry.name} --client antigravity{Style.RESET}")
     _safe_print(f"{Style.DIM}Install to Claude Desktop: mcp-registry add {entry.name} --client claude{Style.RESET}")
     return 0
 
@@ -230,30 +231,37 @@ def cmd_list(args: argparse.Namespace) -> int:
 
 
 def cmd_sync(args: argparse.Namespace) -> int:
-    """Handles synchronization between Claude, Cursor, and mcp-mesh configs."""
+    """Handles synchronization between Claude, Antigravity, Cursor, and mcp-mesh configs."""
     mesh_installer = MCPInstaller(target_type=TargetClient.MCP_MESH)
     claude_installer = MCPInstaller(target_type=TargetClient.CLAUDE)
+    antigravity_installer = MCPInstaller(target_type=TargetClient.ANTIGRAVITY)
 
     _safe_print(f"{Style.CYAN}[*] Inspecting client configurations for cross-tool synchronization...{Style.RESET}")
     claude_servers = claude_installer.list_installed()
+    antigravity_servers = antigravity_installer.list_installed()
     mesh_servers = mesh_installer.list_installed()
 
     _safe_print(f"  Claude Desktop servers found: {len(claude_servers)}")
+    _safe_print(f"  Antigravity servers found:    {len(antigravity_servers)}")
     _safe_print(f"  mcp-mesh servers found:       {len(mesh_servers)}")
 
-    if not claude_servers:
-        _safe_print(f"{Style.DIM}No external Claude Desktop servers to sync into mcp-mesh.{Style.RESET}")
+    external_servers = {}
+    external_servers.update(claude_servers)
+    external_servers.update(antigravity_servers)
+
+    if not external_servers:
+        _safe_print(f"{Style.DIM}No external Claude Desktop or Antigravity servers to sync into mcp-mesh.{Style.RESET}")
         return 0
 
     imported = 0
     config_data = mesh_installer.load_config()
     target_dict = mesh_installer._get_server_dict(config_data)
 
-    for name, s_cfg in claude_servers.items():
+    for name, s_cfg in external_servers.items():
         if name not in target_dict:
             target_dict[name] = s_cfg
             imported += 1
-            _safe_print(f"  {Style.GREEN}[+] Imported '{name}' from Claude Desktop into mcp_mesh.json{Style.RESET}")
+            _safe_print(f"  {Style.GREEN}[+] Imported '{name}' into mcp_mesh.json{Style.RESET}")
 
     if imported > 0:
         import json
@@ -261,7 +269,7 @@ def cmd_sync(args: argparse.Namespace) -> int:
             json.dump(config_data, f, indent=2)
         _safe_print(f"\n{Style.GREEN}Synchronization complete: {imported} server(s) imported into {mesh_installer.config_path}.{Style.RESET}")
     else:
-        _safe_print(f"\n{Style.DIM}All Claude Desktop servers are already present in mcp_mesh.json.{Style.RESET}")
+        _safe_print(f"\n{Style.DIM}All external servers are already present in mcp_mesh.json.{Style.RESET}")
 
     return 0
 
@@ -290,7 +298,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     # Install / Add
     p_install = subparsers.add_parser("add", aliases=["install"], help="Add one or more MCP servers to client config")
     p_install.add_argument("names", nargs="+", help="Server names to install")
-    p_install.add_argument("--client", choices=[TargetClient.MCP_MESH, TargetClient.CLAUDE, TargetClient.CURSOR],
+    p_install.add_argument("--client", choices=[TargetClient.MCP_MESH, TargetClient.CLAUDE, TargetClient.CURSOR, TargetClient.ANTIGRAVITY],
                            default=TargetClient.MCP_MESH, help="Target MCP client (default: mcp-mesh)")
     p_install.add_argument("--target", type=str, help="Explicit target JSON config file path")
     p_install.add_argument("-e", "--env", action="append", help="Environment variables to configure (KEY=VALUE)")
@@ -300,20 +308,20 @@ def main(argv: Optional[List[str]] = None) -> int:
     # Uninstall / Remove
     p_remove = subparsers.add_parser("remove", aliases=["uninstall"], help="Remove one or more MCP servers from config")
     p_remove.add_argument("names", nargs="+", help="Server names to remove")
-    p_remove.add_argument("--client", choices=[TargetClient.MCP_MESH, TargetClient.CLAUDE, TargetClient.CURSOR],
+    p_remove.add_argument("--client", choices=[TargetClient.MCP_MESH, TargetClient.CLAUDE, TargetClient.CURSOR, TargetClient.ANTIGRAVITY],
                           default=TargetClient.MCP_MESH, help="Target MCP client")
     p_remove.add_argument("--target", type=str, help="Explicit target JSON config file path")
     p_remove.add_argument("--no-backup", action="store_true", help="Do not create .bak backup file")
 
     # List
     p_list = subparsers.add_parser("list", aliases=["ls"], help="List configured MCP servers")
-    p_list.add_argument("--client", choices=[TargetClient.MCP_MESH, TargetClient.CLAUDE, TargetClient.CURSOR],
+    p_list.add_argument("--client", choices=[TargetClient.MCP_MESH, TargetClient.CLAUDE, TargetClient.CURSOR, TargetClient.ANTIGRAVITY],
                         default=TargetClient.MCP_MESH, help="Target client configuration to inspect")
     p_list.add_argument("--target", type=str, help="Explicit target JSON config file path")
     p_list.add_argument("-a", "--all", action="store_true", help="List all available servers in registry catalog")
 
     # Sync
-    subparsers.add_parser("sync", help="Synchronize Claude Desktop / Cursor servers into mcp-mesh gateway")
+    subparsers.add_parser("sync", help="Synchronize Claude Desktop / Antigravity / Cursor servers into mcp-mesh gateway")
 
     args = parser.parse_args(argv)
 
