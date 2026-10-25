@@ -154,6 +154,11 @@ def cmd_install(args: argparse.Namespace) -> int:
             continue
 
         _safe_print(f"[*] Configuring '{entry.name}' for client '{installer.target_type}' ({installer.config_path})...")
+        _safe_print(f"    Command: {entry.command} {' '.join(entry.args)}")
+        if entry.official:
+            _safe_print(f"    {Style.DIM}[Verified Publisher] {entry.publisher or 'Official'} (v{entry.version or 'pinned'}){Style.RESET}")
+        else:
+            _safe_print(f"    {Style.YELLOW}[Supply Chain Notice] '{entry.name}' is a community-contributed server. Verify code before executing in production.{Style.RESET}")
 
         # Check required env vars
         missing_required = []

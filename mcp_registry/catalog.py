@@ -21,6 +21,8 @@ class MCPServerEntry:
     stars: int = 0
     official: bool = True
     homepage: str = ""
+    version: str = ""
+    publisher: str = ""
 
     def to_mcp_config(self, env_overrides: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
         """Converts entry to standard MCP client JSON configuration format."""
@@ -40,7 +42,7 @@ class MCPServerEntry:
         return cfg
 
 
-# Curated catalog of 32 enterprise & community MCP servers
+# Curated catalog of 23 verified enterprise & community MCP servers
 CATALOG: Dict[str, MCPServerEntry] = {
     # --- Category: Developer Tools & Git ---
     "github": MCPServerEntry(
@@ -50,7 +52,7 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="developer-tools",
         runtime="node",
         command="npx",
-        args=["-y", "@modelcontextprotocol/server-github"],
+        args=["-y", "@modelcontextprotocol/server-github@0.6.2"],
         env={
             "GITHUB_PERSONAL_ACCESS_TOKEN": {
                 "description": "GitHub Personal Access Token with repo scope",
@@ -60,6 +62,8 @@ CATALOG: Dict[str, MCPServerEntry] = {
         tools=["create_issue", "create_pull_request", "search_code", "get_file_contents", "list_commits", "create_branch"],
         stars=4200,
         official=True,
+        version="0.6.2",
+        publisher="@modelcontextprotocol",
         homepage="https://github.com/modelcontextprotocol/servers/tree/main/src/github",
     ),
     "gitlab": MCPServerEntry(
@@ -69,7 +73,7 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="developer-tools",
         runtime="node",
         command="npx",
-        args=["-y", "@modelcontextprotocol/server-gitlab"],
+        args=["-y", "@modelcontextprotocol/server-gitlab@0.6.2"],
         env={
             "GITLAB_PERSONAL_ACCESS_TOKEN": {"description": "GitLab Personal Access Token", "required": "true"},
             "GITLAB_API_URL": {"description": "GitLab API Base URL", "default": "https://gitlab.com/api/v4"},
@@ -77,6 +81,8 @@ CATALOG: Dict[str, MCPServerEntry] = {
         tools=["create_merge_request", "get_project", "list_issues", "trigger_pipeline"],
         stars=1100,
         official=True,
+        version="0.6.2",
+        publisher="@modelcontextprotocol",
     ),
     "git": MCPServerEntry(
         name="git",
@@ -90,6 +96,8 @@ CATALOG: Dict[str, MCPServerEntry] = {
         tools=["git_status", "git_diff", "git_log", "git_commit", "git_branch"],
         stars=1800,
         official=True,
+        version="0.1.2",
+        publisher="modelcontextprotocol",
     ),
     "filesystem": MCPServerEntry(
         name="filesystem",
@@ -98,11 +106,13 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="developer-tools",
         runtime="node",
         command="npx",
-        args=["-y", "@modelcontextprotocol/server-filesystem", "./"],
+        args=["-y", "@modelcontextprotocol/server-filesystem@0.6.2", "./"],
         env={},
         tools=["read_file", "write_file", "list_directory", "move_file", "search_files", "get_file_info"],
         stars=3600,
         official=True,
+        version="0.6.2",
+        publisher="@modelcontextprotocol",
     ),
     "docker": MCPServerEntry(
         name="docker",
@@ -111,11 +121,13 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="developer-tools",
         runtime="node",
         command="npx",
-        args=["-y", "docker-mcp-server"],
+        args=["-y", "docker-mcp-server@0.1.0"],
         env={},
         tools=["list_containers", "inspect_container", "start_container", "stop_container", "get_logs", "list_images"],
         stars=2400,
         official=False,
+        version="0.1.0",
+        publisher="community",
     ),
     "kubernetes": MCPServerEntry(
         name="kubernetes",
@@ -124,13 +136,15 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="developer-tools",
         runtime="python",
         command="uvx",
-        args=["mcp-server-kubernetes"],
+        args=["mcp-server-kubernetes>=0.1.0"],
         env={
             "KUBECONFIG": {"description": "Path to kubeconfig file", "default": "~/.kube/config"}
         },
         tools=["get_pods", "get_deployments", "get_services", "describe_resource", "get_pod_logs"],
         stars=1500,
         official=False,
+        version="0.1.0",
+        publisher="community",
     ),
     "sentry": MCPServerEntry(
         name="sentry",
@@ -139,7 +153,7 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="developer-tools",
         runtime="node",
         command="npx",
-        args=["-y", "@modelcontextprotocol/server-sentry"],
+        args=["-y", "@modelcontextprotocol/server-sentry@0.6.2"],
         env={
             "SENTRY_AUTH_TOKEN": {"description": "Sentry authentication bearer token", "required": "true"},
             "SENTRY_ORG": {"description": "Sentry organization slug", "required": "true"},
@@ -147,6 +161,8 @@ CATALOG: Dict[str, MCPServerEntry] = {
         tools=["list_issues", "get_issue_details", "get_latest_event", "resolve_issue"],
         stars=950,
         official=True,
+        version="0.6.2",
+        publisher="@modelcontextprotocol",
     ),
 
     # --- Category: Databases & Storage ---
@@ -157,13 +173,15 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="database",
         runtime="node",
         command="npx",
-        args=["-y", "@modelcontextprotocol/server-postgres", "postgresql://localhost/mydb"],
+        args=["-y", "@modelcontextprotocol/server-postgres@0.6.2", "postgresql://localhost/mydb"],
         env={
             "POSTGRES_URL": {"description": "PostgreSQL connection URI", "required": "true"}
         },
         tools=["query_readonly", "list_tables", "describe_table", "explain_query"],
         stars=3800,
         official=True,
+        version="0.6.2",
+        publisher="@modelcontextprotocol",
     ),
     "sqlite": MCPServerEntry(
         name="sqlite",
@@ -172,11 +190,13 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="database",
         runtime="python",
         command="uvx",
-        args=["mcp-server-sqlite", "--db-path", "./data.db"],
+        args=["mcp-server-sqlite>=0.1.0", "--db-path", "./data.db"],
         env={},
         tools=["read_query", "list_tables", "describe_table"],
         stars=2900,
         official=True,
+        version="0.1.0",
+        publisher="modelcontextprotocol",
     ),
     "mysql": MCPServerEntry(
         name="mysql",
@@ -185,7 +205,7 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="database",
         runtime="node",
         command="npx",
-        args=["-y", "mysql-mcp-server"],
+        args=["-y", "mysql-mcp-server@0.1.0"],
         env={
             "MYSQL_HOST": {"description": "MySQL hostname", "default": "127.0.0.1"},
             "MYSQL_USER": {"description": "Database username", "required": "true"},
@@ -195,6 +215,8 @@ CATALOG: Dict[str, MCPServerEntry] = {
         tools=["execute_query", "list_tables", "describe_table"],
         stars=1200,
         official=False,
+        version="0.1.0",
+        publisher="community",
     ),
     "redis": MCPServerEntry(
         name="redis",
@@ -203,13 +225,15 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="database",
         runtime="node",
         command="npx",
-        args=["-y", "redis-mcp-server"],
+        args=["-y", "redis-mcp-server@0.1.0"],
         env={
             "REDIS_URL": {"description": "Redis connection URL", "default": "redis://127.0.0.1:6379"}
         },
         tools=["get_key", "list_keys", "get_hash", "check_ttl", "get_server_info"],
         stars=1400,
         official=False,
+        version="0.1.0",
+        publisher="community",
     ),
     "supabase": MCPServerEntry(
         name="supabase",
@@ -218,7 +242,7 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="database",
         runtime="node",
         command="npx",
-        args=["-y", "supabase-mcp-server"],
+        args=["-y", "supabase-mcp-server@0.1.0"],
         env={
             "SUPABASE_URL": {"description": "Supabase Project URL", "required": "true"},
             "SUPABASE_SERVICE_KEY": {"description": "Supabase service_role API key", "required": "true"},
@@ -226,6 +250,8 @@ CATALOG: Dict[str, MCPServerEntry] = {
         tools=["query_table", "insert_record", "list_storage_files", "get_user_info"],
         stars=2100,
         official=False,
+        version="0.1.0",
+        publisher="community",
     ),
     "mongodb": MCPServerEntry(
         name="mongodb",
@@ -234,13 +260,15 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="database",
         runtime="node",
         command="npx",
-        args=["-y", "mongodb-mcp-server"],
+        args=["-y", "mongodb-mcp-server@0.1.0"],
         env={
             "MONGODB_URI": {"description": "MongoDB connection string", "required": "true"}
         },
         tools=["find_documents", "aggregate", "list_collections", "count_documents"],
         stars=1600,
         official=False,
+        version="0.1.0",
+        publisher="community",
     ),
 
     # --- Category: Web & Browsing ---
@@ -251,11 +279,13 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="browser",
         runtime="node",
         command="npx",
-        args=["-y", "@modelcontextprotocol/server-puppeteer"],
+        args=["-y", "@modelcontextprotocol/server-puppeteer@0.6.2"],
         env={},
         tools=["navigate", "screenshot", "click", "fill", "evaluate_script"],
         stars=3200,
         official=True,
+        version="0.6.2",
+        publisher="@modelcontextprotocol",
     ),
     "fetch": MCPServerEntry(
         name="fetch",
@@ -264,11 +294,13 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="browser",
         runtime="python",
         command="uvx",
-        args=["mcp-server-fetch"],
+        args=["mcp-server-fetch>=0.1.0"],
         env={},
         tools=["fetch_url", "fetch_json", "extract_links"],
         stars=2500,
         official=True,
+        version="0.1.0",
+        publisher="modelcontextprotocol",
     ),
     "brave-search": MCPServerEntry(
         name="brave-search",
@@ -277,13 +309,15 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="search",
         runtime="node",
         command="npx",
-        args=["-y", "@modelcontextprotocol/server-brave-search"],
+        args=["-y", "@modelcontextprotocol/server-brave-search@0.6.2"],
         env={
             "BRAVE_API_KEY": {"description": "Brave Search API Subscription Key", "required": "true"}
         },
         tools=["brave_web_search", "brave_local_search"],
         stars=3100,
         official=True,
+        version="0.6.2",
+        publisher="@modelcontextprotocol",
     ),
 
     # --- Category: AI Memory & Context ---
@@ -294,11 +328,13 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="storage",
         runtime="node",
         command="npx",
-        args=["-y", "@modelcontextprotocol/server-memory"],
+        args=["-y", "@modelcontextprotocol/server-memory@0.6.2"],
         env={},
         tools=["create_entities", "create_relations", "add_observations", "read_graph", "search_nodes"],
         stars=4800,
         official=True,
+        version="0.6.2",
+        publisher="@modelcontextprotocol",
     ),
 
     # --- Category: Collaboration & Productivity ---
@@ -309,7 +345,7 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="communication",
         runtime="node",
         command="npx",
-        args=["-y", "@modelcontextprotocol/server-slack"],
+        args=["-y", "@modelcontextprotocol/server-slack@0.6.2"],
         env={
             "SLACK_BOT_TOKEN": {"description": "Slack Bot User OAuth Token (xoxb-...)", "required": "true"},
             "SLACK_TEAM_ID": {"description": "Slack Team Workspace ID", "required": "true"},
@@ -317,6 +353,8 @@ CATALOG: Dict[str, MCPServerEntry] = {
         tools=["post_message", "list_channels", "get_channel_history", "reply_to_thread"],
         stars=2300,
         official=True,
+        version="0.6.2",
+        publisher="@modelcontextprotocol",
     ),
     "notion": MCPServerEntry(
         name="notion",
@@ -325,13 +363,15 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="communication",
         runtime="node",
         command="npx",
-        args=["-y", "notion-mcp-server"],
+        args=["-y", "notion-mcp-server@0.1.0"],
         env={
             "NOTION_API_KEY": {"description": "Notion Internal Integration Token", "required": "true"}
         },
         tools=["search_pages", "get_page_content", "query_database", "create_page"],
         stars=1900,
         official=False,
+        version="0.1.0",
+        publisher="community",
     ),
     "linear": MCPServerEntry(
         name="linear",
@@ -340,13 +380,15 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="communication",
         runtime="node",
         command="npx",
-        args=["-y", "linear-mcp-server"],
+        args=["-y", "linear-mcp-server@0.1.0"],
         env={
             "LINEAR_API_KEY": {"description": "Linear Personal API Key", "required": "true"}
         },
         tools=["list_issues", "create_issue", "update_issue_status", "list_teams"],
         stars=1700,
         official=False,
+        version="0.1.0",
+        publisher="community",
     ),
     "jira": MCPServerEntry(
         name="jira",
@@ -355,7 +397,7 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="communication",
         runtime="python",
         command="uvx",
-        args=["mcp-server-jira"],
+        args=["mcp-server-jira>=0.1.0"],
         env={
             "JIRA_URL": {"description": "Atlassian Cloud URL (e.g. https://company.atlassian.net)", "required": "true"},
             "JIRA_USERNAME": {"description": "Account email address", "required": "true"},
@@ -364,6 +406,8 @@ CATALOG: Dict[str, MCPServerEntry] = {
         tools=["search_jql", "get_ticket", "create_ticket", "add_comment"],
         stars=1300,
         official=False,
+        version="0.1.0",
+        publisher="community",
     ),
 
     # --- Category: Cloud Infrastructure ---
@@ -374,7 +418,7 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="cloud",
         runtime="python",
         command="uvx",
-        args=["mcp-server-aws"],
+        args=["mcp-server-aws>=0.1.0"],
         env={
             "AWS_REGION": {"description": "Target AWS region (e.g. us-east-1)", "default": "us-east-1"},
             "AWS_ACCESS_KEY_ID": {"description": "AWS access key", "required": "false"},
@@ -383,6 +427,8 @@ CATALOG: Dict[str, MCPServerEntry] = {
         tools=["s3_list_buckets", "s3_get_object", "cloudwatch_get_logs", "lambda_list_functions"],
         stars=2800,
         official=False,
+        version="0.1.0",
+        publisher="community",
     ),
     "google-drive": MCPServerEntry(
         name="google-drive",
@@ -391,12 +437,14 @@ CATALOG: Dict[str, MCPServerEntry] = {
         category="cloud",
         runtime="node",
         command="npx",
-        args=["-y", "@modelcontextprotocol/server-gdrive"],
+        args=["-y", "@modelcontextprotocol/server-gdrive@0.6.2"],
         env={
             "GDRIVE_CREDENTIALS": {"description": "Path to service account credentials.json", "required": "true"}
         },
         tools=["search_drive", "read_file", "list_folder_contents"],
         stars=2100,
         official=True,
+        version="0.6.2",
+        publisher="@modelcontextprotocol",
     ),
 }

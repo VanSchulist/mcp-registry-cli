@@ -26,7 +26,7 @@ The Model Context Protocol (MCP) powers agentic AI workflows across Claude, Curs
 - Coordinating identical MCP server configurations between **Claude Desktop**, **Cursor**, and the **mcp-mesh** gateway is repetitive.
 
 `mcp-registry-cli` provides an `npm` / `brew`-like CLI experience specifically built for MCP tools:
-1. **Curated & Verified Catalog**: 25+ production-grade servers across database, developer tools, search, browser automation, and cloud integrations.
+1. **Curated & Verified Catalog**: 23 verified production-grade servers across database, developer tools, search, browser automation, and cloud integrations.
 2. **Multi-Target Ingestion**: One-click install directly into `mcp_mesh.json`, Claude Desktop (`claude_desktop_config.json`), or Cursor (`.cursor/mcp.json`).
 3. **Cross-Client Synchronization**: `mcp-registry sync` automatically imports your existing Claude Desktop tools into `mcp-mesh` without duplicate setup.
 4. **Zero External Dependencies**: Pure Python standard library implementation that runs anywhere with no extra bloat.
