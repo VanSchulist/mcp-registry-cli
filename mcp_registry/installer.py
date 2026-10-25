@@ -33,10 +33,13 @@ class MCPInstaller:
         home = Path.home()
 
         if target_type == TargetClient.MCP_MESH:
-            # Check local current directory first, fallback to user home config
+            # Check local current directory first, fallback to user global mesh config
             local_mesh = Path("mcp_mesh.json")
             if local_mesh.exists():
                 return local_mesh.resolve()
+            global_mesh = home / ".mcp-mesh" / "servers.json"
+            if global_mesh.exists():
+                return global_mesh.resolve()
             return Path("mcp_mesh.json")
 
         if target_type == TargetClient.ANTIGRAVITY:
@@ -60,6 +63,13 @@ class MCPInstaller:
             local_mcp = Path(".mcp.json")
             if local_mcp.exists():
                 return local_mcp.resolve()
+            user_cursor = home / ".cursor" / "mcp.json"
+            if user_cursor.exists():
+                return user_cursor.resolve()
+            if sys.platform == "win32":
+                appdata = os.environ.get("APPDATA")
+                if appdata and (Path(appdata) / "Cursor" / "mcp.json").exists():
+                    return (Path(appdata) / "Cursor" / "mcp.json").resolve()
             return Path(".cursor") / "mcp.json"
 
         return Path("mcp_mesh.json")
@@ -124,23 +134,30 @@ class MCPInstaller:
         servers[entry.name] = server_def
 
         if dry_run:
-            return True, f"[Dry Run] Successfully prepared configuration for '{entry.name}'"
+            preview_json = json.dumps({entry.name: server_def}, indent=2)
+            return True, f"[Dry Run] Successfully prepared configuration for '{entry.name}' (Target: {self.config_path}):\n{preview_json}"
 
         # Ensure parent directory exists
         if self.config_path.parent and not self.config_path.parent.exists():
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
 
         # Create backup if file exists
+        bak_path: Optional[Path] = None
         if backup and self.config_path.exists():
             bak_path = self.config_path.with_suffix(self.config_path.suffix + ".bak")
             shutil.copy2(self.config_path, bak_path)
 
-        # Write formatted JSON
+        # Write formatted JSON with rollback on failure
         try:
             with open(self.config_path, "w", encoding="utf-8") as f:
                 json.dump(config_data, f, indent=2)
             return True, f"Successfully configured '{entry.name}' in {self.config_path}"
         except Exception as e:
+            if backup and bak_path and bak_path.exists():
+                try:
+                    shutil.copy2(bak_path, self.config_path)
+                except Exception:
+                    pass
             return False, f"Failed to write configuration: {e}"
 
     def uninstall(self, server_name: str, backup: bool = True) -> Tuple[bool, str]:
