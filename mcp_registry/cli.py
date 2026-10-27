@@ -5,10 +5,11 @@ from __future__ import annotations
 import argparse
 import os
 import sys
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from .catalog import MCPServerEntry
 from .client import RegistryClient
+from .doctor import DiagnosticCheck, DoctorReport, MCPDoctor
 from .installer import MCPInstaller, TargetClient
 
 
@@ -279,6 +280,68 @@ def cmd_sync(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_doctor(args: argparse.Namespace) -> int:
+    """Handles the 'doctor' diagnostic health check subcommand."""
+    client = RegistryClient(custom_catalog_path=args.catalog)
+    doctor = MCPDoctor(catalog=client.catalog)
+    target_path = getattr(args, "config", None)
+    report = doctor.run_diagnostics(target_client=args.client, custom_path=target_path)
+
+    if getattr(args, "format", "table") == "json":
+        import json
+        _safe_print(json.dumps(report.to_dict(), indent=2))
+        if args.strict and not report.is_healthy:
+            return 1
+        return 0
+
+    _safe_print(f"{Style.CYAN}{Style.BOLD}======================================================================{Style.RESET}")
+    _safe_print(f"{Style.CYAN}{Style.BOLD}  mcp-registry doctor  |  System & Configuration Health Diagnostic{Style.RESET}")
+    _safe_print(f"{Style.CYAN}{Style.BOLD}======================================================================{Style.RESET}\n")
+
+    # Group checks by target client
+    grouped: Dict[str, List[DiagnosticCheck]] = {}
+    for c in report.checks:
+        grouped.setdefault(c.target, []).append(c)
+
+    for target, checks in grouped.items():
+        first_path = checks[0].config_path or "default"
+        _safe_print(f"{Style.BOLD}Target: {target.upper()} ({first_path}){Style.RESET}")
+        for c in checks:
+            if c.status == "PASS":
+                badge = f"{Style.GREEN}[PASS]{Style.RESET}"
+            elif c.status == "FAIL":
+                badge = f"{Style.RED}[FAIL]{Style.RESET}"
+            elif c.status == "WARN":
+                badge = f"{Style.YELLOW}[WARN]{Style.RESET}"
+            else:
+                badge = f"{Style.CYAN}[INFO]{Style.RESET}"
+
+            srv_prefix = f"[{c.server}] " if c.server else ""
+            _safe_print(f"  {badge} {srv_prefix}{c.name}: {c.message}")
+            if c.remediation and c.status in ("FAIL", "WARN"):
+                _safe_print(f"         {Style.DIM}-> Remediation: {c.remediation}{Style.RESET}")
+        _safe_print()
+
+    # Summary
+    _safe_print(f"{Style.DIM}{'-' * 70}{Style.RESET}")
+    summary_str = (
+        f"Summary: {Style.GREEN}{report.passed} PASS{Style.RESET} | "
+        f"{Style.YELLOW}{report.warnings} WARN{Style.RESET} | "
+        f"{Style.RED}{report.failures} FAIL{Style.RESET} | "
+        f"{Style.CYAN}{report.infos} INFO{Style.RESET}"
+    )
+    _safe_print(summary_str)
+
+    if report.is_healthy:
+        _safe_print(f"Status:  {Style.GREEN}{Style.BOLD}HEALTHY{Style.RESET} (No blocking failures detected)")
+    else:
+        _safe_print(f"Status:  {Style.RED}{Style.BOLD}UNHEALTHY{Style.RESET} ({report.failures} critical failure(s) detected)")
+
+    if args.strict and not report.is_healthy:
+        return 1
+    return 0
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     """Main CLI entrypoint."""
     parser = argparse.ArgumentParser(
@@ -328,6 +391,14 @@ def main(argv: Optional[List[str]] = None) -> int:
     # Sync
     subparsers.add_parser("sync", help="Synchronize Claude Desktop / Antigravity / Cursor servers into mcp-mesh gateway")
 
+    # Doctor
+    p_doctor = subparsers.add_parser("doctor", help="Run diagnostic health check on MCP client configurations and runtimes")
+    p_doctor.add_argument("-c", "--client", choices=["all", TargetClient.MCP_MESH, TargetClient.CLAUDE, TargetClient.CURSOR, TargetClient.ANTIGRAVITY],
+                          default="all", help="Target client configuration to audit (default: all)")
+    p_doctor.add_argument("--config", "--target", dest="config", type=str, help="Audit an explicit JSON config file path")
+    p_doctor.add_argument("--strict", action="store_true", help="Exit with code 1 if any FAIL diagnostic checks occur")
+    p_doctor.add_argument("--format", choices=["table", "json"], default="table", help="Output format (table or json)")
+
     args = parser.parse_args(argv)
 
     if not args.subcommand:
@@ -347,6 +418,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         return cmd_list(args)
     elif args.subcommand == "sync":
         return cmd_sync(args)
+    elif args.subcommand == "doctor":
+        return cmd_doctor(args)
 
     return 0
 

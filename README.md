@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![PyPI version](https://img.shields.io/badge/pypi-v1.0.0-f59e0b.svg?style=flat-square)](https://pypi.org/project/mcp-registry-cli/)
+[![PyPI version](https://img.shields.io/badge/pypi-v1.2.0-f59e0b.svg?style=flat-square)](https://pypi.org/project/mcp-registry-cli/)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-ea580c.svg?style=flat-square)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-d97706.svg?style=flat-square)](LICENSE)
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0%20external-22c55e.svg?style=flat-square)](pyproject.toml)
@@ -26,10 +26,11 @@ The Model Context Protocol (MCP) powers agentic AI workflows across Claude, Curs
 - Coordinating identical MCP server configurations between **Claude Desktop**, **Cursor**, and the **mcp-mesh** gateway is repetitive.
 
 `mcp-registry-cli` provides an `npm` / `brew`-like CLI experience specifically built for MCP tools:
-1. **Curated & Verified Catalog**: 23 verified production-grade servers across database, developer tools, search, browser automation, and cloud integrations.
-2. **Multi-Target Ingestion**: One-click install directly into `mcp_mesh.json`, Claude Desktop (`claude_desktop_config.json`), or Cursor (`.cursor/mcp.json`).
-3. **Cross-Client Synchronization**: `mcp-registry sync` automatically imports your existing Claude Desktop tools into `mcp-mesh` without duplicate setup.
-4. **Zero External Dependencies**: Pure Python standard library implementation that runs anywhere with no extra bloat.
+1. **Curated & Verified Catalog**: 27 verified production-grade servers across database analytics, developer tools, search, browser automation, and cloud integrations.
+2. **Multi-Target Ingestion**: One-click install directly into `mcp_mesh.json`, Claude Desktop (`claude_desktop_config.json`), Cursor (`.cursor/mcp.json`), or Antigravity (`~/.gemini/config/mcp_config.json`).
+3. **Cross-Client Synchronization**: `mcp-registry sync` automatically imports your existing Claude Desktop and Antigravity tools into `mcp-mesh` without duplicate setup.
+4. **Diagnostic Health Check (`doctor`)**: Audits client configs for syntax validity, missing system PATH binaries, unconfigured credentials, and Turn-0 token bloat.
+5. **Zero External Dependencies**: Pure Python standard library implementation that runs anywhere with no extra bloat.
 
 ---
 
@@ -151,10 +152,46 @@ mcp-registry list --all
 
 ### 5. Synchronize Client Configurations
 
-Automatically import Claude Desktop servers into `mcp-mesh`:
+Automatically import Claude Desktop and Antigravity servers into `mcp-mesh`:
 
 ```bash
 mcp-registry sync
+```
+
+### 6. System & Client Health Diagnostic (mcp-registry doctor)
+
+Audit local configurations, runtime executables, required environment credentials, and Turn-0 token efficiency:
+
+```bash
+# Audit all installed MCP clients automatically
+mcp-registry doctor
+
+# Audit a specific client (claude, cursor, antigravity, or mcp-mesh)
+mcp-registry doctor --client claude
+
+# Fail in CI/pre-commit if any critical binary or env var errors exist
+mcp-registry doctor --strict
+
+# Export structured telemetry report as JSON
+mcp-registry doctor --format json
+```
+
+Example Output:
+```text
+======================================================================
+  mcp-registry doctor  |  System & Configuration Health Diagnostic
+======================================================================
+
+Target: ANTIGRAVITY (~/.gemini/config/mcp_config.json)
+  [PASS] config_existence: Configuration file found.
+  [PASS] json_syntax: Valid JSON object structure.
+  [PASS] token_economy: 2 server(s) configured (~1,300 Turn-0 tokens). Overhead within manageable limits.
+  [PASS] [mcp-mesh] binary:mcp-mesh: Executable 'uv' located at ~/.local/bin/uv
+  [PASS] [ghost-job-hunter] binary:ghost-job-hunter: Executable 'python' located at /usr/bin/python3
+
+----------------------------------------------------------------------
+Summary: 5 PASS | 0 WARN | 0 FAIL | 0 INFO
+Status:  HEALTHY (No blocking failures detected)
 ```
 
 ---
@@ -163,9 +200,10 @@ mcp-registry sync
 
 | Client Target | Default Path (macOS / Linux / Windows) | Config Key |
 | :--- | :--- | :--- |
-| `mcp-mesh` | `./mcp_mesh.json` | `servers` |
+| `mcp-mesh` | `./mcp_mesh.json` / `~/.mcp-mesh/servers.json` | `servers` |
 | `claude` | `~/Library/Application Support/Claude/...` / `%APPDATA%\Claude\...` | `mcpServers` |
-| `cursor` | `.cursor/mcp.json` / `.mcp.json` | `mcpServers` |
+| `cursor` | `.cursor/mcp.json` / `~/.cursor/mcp.json` | `mcpServers` |
+| `antigravity` | `~/.gemini/config/mcp_config.json` | `mcpServers` |
 | `--target <path>` | Custom user-specified path | Auto-detected |
 
 ---

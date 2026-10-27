@@ -42,9 +42,9 @@ class MCPServerEntry:
         return cfg
 
 
-# Curated catalog of 23 verified enterprise & community MCP servers
+# Curated catalog of 27 verified enterprise & community MCP servers
 CATALOG: Dict[str, MCPServerEntry] = {
-    # --- Category: Developer Tools & Git ---
+    # --- Category: Developer Tools & Existential Cloud Ecosystem ---
     "github": MCPServerEntry(
         name="github",
         display_name="GitHub Official MCP",
@@ -165,6 +165,39 @@ CATALOG: Dict[str, MCPServerEntry] = {
         publisher="@modelcontextprotocol",
     ),
 
+    "mcp-mesh": MCPServerEntry(
+        name="mcp-mesh",
+        display_name="MCP Mesh Gateway & Router",
+        description="Zero-dependency reverse proxy and lazy tool router in pure Python stdlib; cuts context overhead by 85-95%.",
+        category="developer-tools",
+        runtime="python",
+        command="python",
+        args=["-m", "mcp_mesh.cli", "run", "--federate"],
+        env={},
+        tools=["mesh_search_tools", "mesh_describe_tool", "mesh_invoke_tool", "mesh_status"],
+        stars=450,
+        official=True,
+        version="1.2.0",
+        publisher="Existential Cloud AI Studio",
+        homepage="https://github.com/VanSchulist/mcp-mesh",
+    ),
+    "ghost-job-hunter": MCPServerEntry(
+        name="ghost-job-hunter",
+        display_name="Ghost Job Hunter MCP",
+        description="Heuristic detector for ghost jobs, stale requisitions, and employer hiring velocity.",
+        category="developer-tools",
+        runtime="python",
+        command="python",
+        args=["-m", "ghost_hunter.cli", "serve-mcp"],
+        env={},
+        tools=["audit_job_posting", "audit_company_github", "hunt_job"],
+        stars=320,
+        official=True,
+        version="1.1.0",
+        publisher="Existential Cloud AI Studio",
+        homepage="https://github.com/VanSchulist/ghost-job-hunter",
+    ),
+
     # --- Category: Databases & Storage ---
     "postgres": MCPServerEntry(
         name="postgres",
@@ -269,6 +302,49 @@ CATALOG: Dict[str, MCPServerEntry] = {
         official=False,
         version="0.1.0",
         publisher="community",
+    ),
+
+    "duckdb": MCPServerEntry(
+        name="duckdb",
+        display_name="DuckDB Embedded Analytics MCP",
+        description="Query local columnar DuckDB databases and Parquet files directly via fast SQL.",
+        category="database",
+        runtime="python",
+        command="uvx",
+        args=["mcp-server-duckdb>=0.1.0"],
+        env={
+            "DUCKDB_PATH": {
+                "description": "Path to local DuckDB database file",
+                "default": ":memory:",
+            }
+        },
+        tools=["query", "list_tables", "describe_table"],
+        stars=1100,
+        official=False,
+        version="0.1.0",
+        publisher="community",
+        homepage="https://github.com/motherduck-db/mcp-server-duckdb",
+    ),
+    "sqlite-vec": MCPServerEntry(
+        name="sqlite-vec",
+        display_name="SQLite Vec Embeddings MCP",
+        description="Local vector similarity search and embedding storage using SQLite vector extension.",
+        category="database",
+        runtime="python",
+        command="uvx",
+        args=["mcp-server-sqlite-vec>=0.1.0"],
+        env={
+            "SQLITE_VEC_DB_PATH": {
+                "description": "Path to local SQLite database with vec extension",
+                "default": "./vectors.db",
+            }
+        },
+        tools=["vector_search", "create_index", "upsert_vector"],
+        stars=950,
+        official=False,
+        version="0.1.0",
+        publisher="community",
+        homepage="https://github.com/asg017/sqlite-vec",
     ),
 
     # --- Category: Web & Browsing ---
